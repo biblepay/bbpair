@@ -1,0 +1,214 @@
+<html>
+ <head>
+
+    <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+    <meta content="utf-8" http-equiv="encoding">
+
+    <!-- Locally stored icons -->
+    <link rel="apple-touch-icon" sizes="180x180" href="./favicons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="./favicons/favicon.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="./favicons/favicon.png">
+    <link rel="shortcut icon" href="./favicons/favicon.ico">
+    <link rel="icon" type="image/png" href="./images/favicon.png">
+
+    <meta name="msapplication-TileColor" content="#2b5797">
+    <meta name="msapplication-TileImage" content="./favicons/favicon.png">
+    <meta name="msapplication-config" content="./favicons/browserconfig.xml">
+    <meta name="theme-color" content="#123899">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- jQuery for javascript, Bootstrap for CSS styles -->
+    <script src="./js/jquery-3.5.0.min.js"></script>
+    <script src="./js/bootstrap.min.js"></script>
+    <link href="./css/styles.css" rel="stylesheet" id="styles-css">
+    <link href="./css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+
+    <!-- Instascan for QR recognition, CC for crypto signing -->
+    <script type="text/javascript" src="./js/instascan.min.js"></script>
+    <script src="./js/cc.js"></script>
+
+    <!-- Clipboard to store your key to the clipboard, cookie.js to store the settings (if we remove the modal dialog, we can remove cookie) -->
+    <script src="./js/clipboard.min.js"></script>
+    <script src="./js/cookie.js"></script>
+
+    <!-- Script.js for the common base58 functions -->
+    <script src="./js/script.js"></script>
+    <title>BiblePay - Air Wallet</title>
+ </head>
+
+<style>
+     .bbp-button
+     {
+          width:26px;
+          height:26px;
+          padding:2px 2px !important;
+     }
+
+     .bbp-button-image
+	 {
+	      width:20px;
+	      height:20px;
+	 }
+
+
+</style>
+
+ <body>
+ <div class="container">
+   <div class="row">
+    <div class="col-md-4"></div>
+    <div class="col-md-4">
+      <section class="form">
+        <div class="bbp">
+            <span><font color=gold><center>The BiblePay Air Wallet</center></font>
+            </span>
+        </div>
+	<div id="pwd-container">
+        <form method="post" action="javascript:login();" role="login" style="padding-bottom: 2px;">
+            <img style="width: 240px;" src="./images/logo.png" class="img-responsive" alt="" />
+            <div style="padding-bottom: 15px">
+              <input id="email" type="email" name="email" placeholder="Email" required class="form-control input-lg" value="" />
+		<div class="input-group">
+	          <input style="margin: 0px;" type="password" class="form-control input-lg" id="password" placeholder="Password" required="" />
+		  <span class="input-group-btn">
+    		    <button id="btnPasswordQR" class="btn" style="margin: 0px; display: none;" type="button" onclick="javascript:openQrModal('password');">
+    		    <i class="fa fa-qrcode" style="height: 29; width: 29; font-size: 30px;"></i></button>
+    		    <button id="btnPasswordEye" class="btn" style="margin: 0px;" type="button" onclick="javascript:eyeFunction('password');"><i class="fa fa-eye" style="height: 29; width: 29; font-size: 30px;"></i></button>
+  		  </span>
+		</div>
+	      <div class="pwstrength_viewport_errors"></div>
+              <div class="pwstrength_viewport_progress"></div>
+              <button id="signin" type="submit" name="go" class="btnMain btn btn-lg btn-primary btn-block">LOGIN</button>
+            </div>
+	    <div id="loginprogress" style="display: none;">
+		<img src="./images/loading.gif" style="width: 100%; height: 25px; margin: 0px;" />
+	    </div>
+	</form>
+	</div>
+
+	<div id="addr-container" style="display: none;">
+        <form method="post" action="javascript:spendf();" role="spend" style="padding-bottom: 2px;">
+	<div class="row" style="display: flex; justify-content: center; align-items: center;">
+
+      <div title="BBP" class="col-md-3 currency-logo" style="filter: drop-shadow(1px 1px 2px #4b4b4c); padding: 2px; width: 52px;"><a href="javascript:switchCoin('BBP');">
+      <img src="./images/bbplogo.png" class="img-responsive" alt="" /></a></div>
+	  <div title="BTC" class="col-md-3 currency-logo" style="padding: 2px; width: 53px;"><a href="javascript:switchCoin('BTC');"><img src="./images/bitcoin.png" class="img-responsive" alt="" /></a></div>
+	  <div title="LTC" class="col-md-3 currency-logo" style="padding: 2px; width: 52px;"><a href="javascript:switchCoin('LTC');"><img src="./images/litecoin.png" class="img-responsive" alt="" /></a></div>
+	  <div title="DOGE" class="col-md-3 currency-logo" style="padding: 2px; width: 53px;"><a href="javascript:switchCoin('DOGE');"><img src="./images/dogecoin.png" class="img-responsive" alt="" /></a></div>
+	</div>
+
+          <div class="row">
+	      <div class="alert alert-info fade in" style="margin-bottom: 0px; padding-left: 5px; padding-right: 5px; font-weight: bold; font-size: 10px;">
+                <a href="" target="_blank" style="font-size: 1.17em;" id="addr-id">BBPADDRESS</a>
+                    <button id="addr-id-clipboard" type="button" alt='Copy to Clipboard' class="btn btn-primary bbp-button clipboard" data-clipboard-text="BBPADDRESS">
+                     <img class='bbp-button-image' title='Copy to Clipboard' src='./images/copy-to-clipboard.png' />
+				 	</button>
+
+                <div style="margin-top: 2px;">
+                		  <a href="javascript:togglePrice();" class="label hvr-buzz-out label-primary" id="addr-balance" style="vertical-align: middle; font-size: 11.8px; padding: 4.3px;">Balance: 0.00000000 BBP</a>
+                  		  <button id="addr-balance-refresh" type="button" class="btn btn-primary refresh bbp-button" onclick="javascript:loadAddress();">
+                  		      <img class='bbp-button-image' title='Refresh Balance' src='./images/refresh.png' />
+			              </button>
+		        <button id="privatekey-copy" type="button" class="btn btn-primary privkey bbp-button" data-placement="bottom" onclick="javascript:copyPrivateKey();">
+                        <img class='bbp-button-image' title='Copy Private Key' src='./images/key.png' />
+			    </button>
+                <button id="changeaddress-modify" type="button" class="btn btn-primary changeaddress bbp-button" data-placement="bottom" onclick="javascript:modifyTheChangeAddress();">
+                        <img class='bbp-button-image' title='Edit Change Address' src='./images/receive.png' />
+			    </button>
+                <button id="trx-fee" type="button" class="btn btn-primary customfee bbp-button" onclick="changeTheFee();">
+                         <img class='bbp-button-image' title='Customize the Fee' src='./images/configure.png' />
+			    </button>
+		</div>
+        </div>
+
+              <div id="addr-receive" style="padding-top: 10px;">
+                <img id="addr-qr" width="156" class="img-responsive" style="border: 1px solid black;" src="./images/qrloader.gif" alt="" />
+              </div>
+
+	      <div id="addr-spend" style="display: none; margin-bottom: 2px;">
+		  <div class="input-group">
+		    <input id="address" autocomplete="off" style='font-size:.90em;' type="text" required name="address" placeholder="BBP address" class="form-control input-lg input-spend" value="" />
+		    <span class="input-group-btn">
+    		      <button class="btn" type="button" onclick="javascript:openQrModal('address');"><i class="fa fa-qrcode" style="height: 29; width: 29; font-size: 30px;"></i></button>
+  		    </span>
+		  </div>
+		  <div class="input-group">
+                    <input type="number" required autocomplete="off" class="form-control input-lg input-spend" min="0.001" step="0.00000001" name="amount" id="amount" placeholder="Amount of BBP to send" oninput="javascript:amountChanged(this.value);" />
+                    <span class="input-group-btn">
+                      <button class="btn" type="button" onclick="javascript:copyWholeBalance();"><i class="fa fa-bars" style="height: 29; width: 29; font-size: 30px;"></i></button>
+                    </span>
+                  </div>
+                  <button id="submit" type="submit" name="submit" class="btnMain btn btn-lg btn-primary btn-block">SEND</button>
+	      </div>
+
+              <div class="row" id="spend-receive" style="margin-bottom: 13px">
+                 <div class="btn-group text-center" data-toggle="buttons" style="padding-top: 10px">
+                    <label id="mainR" title="Receive" style="font-weight: bold;" class="btn btn-primary active center-block">
+                       <input value="R" onchange="rsvs(this);" type="radio">
+                       <img width='30px' height='30px' src='./images/receive.png' />
+                    </label>
+                    <label id="mainS" title="Send" style="font-weight: bold;" class="btn btn-primary center-block">
+                       <input value="S" onchange="rsvs(this);" type="radio">
+                       <img width='30px' height='30px' src='./images/send.png' />
+                    </label>
+                 </div>
+              </div>
+
+              <div id="sendprogress" style="display: none;">
+                <img src="./images/loading.gif" style="width: 100%; height: 25px; margin-bottom: 0px;" />
+              </div>
+
+            </div>
+        </form>
+	</div>
+        <div class="form-links">
+          <a target="_blank" href="https://chainz.cryptoid.info/bbp/">Explorer</a> |
+          <a target="_blank" href="https://wiki.biblepay.org/Air_Wallet">About the Air Wallet</a>
+        </div>
+        <div class="form-links">
+        </div>
+      </section>
+      </div>
+      <div class="col-md-4"></div>
+
+  </div>
+ </div>
+
+ <!-- Warning Modal -->
+ <div class="modal fade" id="modalWarning" tabindex="-1" role="dialog" aria-labelledby="modalWarningLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalWarningLabel" style="font-weight: bold;">TERMS OF USE</h5>
+      </div>
+      <div class="modal-body">
+	<p style="text-align: justify;">Please read "About the Air Wallet" below before using the air wallet.
+	(The email and password derives your public-private keypair, and, no one can recover the keypair if you lose your credentials).
+	<br /><br /><strong>You act as your own bank.</strong></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="javascript:accept();">Accept</button>
+        <button type="button" class="btn btn-secondary" onclick="javascript:window.history.back();">Reject</button>
+      </div>
+    </div>
+  </div>
+ </div>
+
+ <!-- Qr Scanner Modal -->
+ <div class="modal fade" id="modalQrCode" tabindex="-1" role="dialog" aria-labelledby="modalQrCodeLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalQrCodeLabel" style="font-weight: bold;">Scan Your QR Code</h5>
+      </div>
+      <div class="modal-body">
+        <video id="qrScannerPreview" style="width: 100%;"></video>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="javascript:closeQrModal();">Close</button>
+      </div>
+    </div>
+  </div>
+ </div>
+ </body>
+</html>
